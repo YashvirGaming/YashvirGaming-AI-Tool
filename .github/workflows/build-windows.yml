@@ -1,0 +1,73 @@
+name: Build Windows EXE (Nuitka)
+
+on:
+  push:
+    tags:
+      - "v*"              # runs when you push a tag like v1.0.0
+  workflow_dispatch:       # allow manual runs from Actions tab
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install build deps
+        run: |
+          pip install nuitka ordered-set zstandard
+          pip install -r requirements.txt
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Build with Nuitka
+        run: |
+          python -m nuitka ^
+            --onefile ^
+            --standalone ^
+            --windows-console=no ^
+            --enable-plugin=tk-inter ^
+            --nofollow-import-to=tkinter.test ^
+            --assume-yes-for-downloads ^
+            --output-dir=dist ^
+            --remove-output ^
+            --windows-company-name="Yashvir Gaming" ^
+            --windows-product-name="Yashvir Gaming AI" ^
+            --windows-file-version=${{ github.ref_name }} ^
+            --windows-product-version=${{ github.ref_name }} ^
+            --windows-icon-from-ico=icon.ico ^
+            main.py
+
+      - name: Rename artifact
+        shell: bash
+        run: |
+          mkdir -p upload
+          mv dist/main.exe "upload/Yashvir-Gaming-AI-${GITHUB_REF_NAME}-win64.exe"
+
+      - name: Upload artifact (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Yashvir-Gaming-AI-${{ github.ref_name }}-win64
+          path: upload/*.exe
+
+      - name: Create/Update Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: upload/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
