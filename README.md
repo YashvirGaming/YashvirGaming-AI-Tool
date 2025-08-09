@@ -3,7 +3,6 @@
 **🧠 Yashvir Gaming AI – Premium Desktop Assistant**
 
 Yashvir Gaming AI is a premium **CustomTkinter-powered AI desktop application** that allows you to chat with multiple OpenAI models, generate high-resolution images, and enjoy an enhanced ChatGPT-like experience directly on your desktop.
-
 ---
 
 <img width="1261" height="916" alt="image" src="https://github.com/user-attachments/assets/3b6d98db-2423-4c67-a6e4-d6749f353c3b" />
@@ -27,6 +26,7 @@ Yashvir Gaming AI is a premium **CustomTkinter-powered AI desktop application** 
    ```bash
    git clone https://github.com/YashvirGaming/YashvirGaming-AI-Tool.git
    cd YashvirGaming-AI-Tool
+![Build](https://github.com/YashvirGaming/YashvirGaming-AI-Tool/actions/workflows/build-windows.yml/badge.svg)
 
 ---
 
